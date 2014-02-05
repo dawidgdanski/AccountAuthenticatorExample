@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.authenticator.account.MainActivity" >
+    
+    <item android:id="@+id/log_in"
+        android:title="@string/login"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+</menu>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Simple Account Authenticator</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="my_account">My account</string>
+    <string name="create_account">Create account</string>
+    <string name="login">Log In</string>
+    <string name="username">User name</string>
+    <string name="password">Password</string>
+    <string name="invalid_auth_token">Invalid authorization token</string>
+    <string name="sign_up_underlined"><u>Sign up</u></string>
+    <string name="sign_up">Sign up</string>
+    <string name="mail">Email</string>
+    <string name="already_member_question"><u>Already member?</u></string>
+    <string name="user_authorized">User authorized successfully</string>
+    <string name="authorization_completed">Authorization completed</string>
+    <string name="get_authtoken">Get Authtoken</string>
+    <string name="invalidate_auth_token">Invalidate Authtoken</string>
+    <string name="add_account">Add account</string>
+    <string name="account_created_successfully">Account created successfully!</string>
+    <string name="authtoken">Authtoken: %s</string>
+    <string name="no_accounts_created">No accounts created</string>
+    <string name="pick_account">Pick account</string>
+    <string name="account_invalidated">%s invalidated</string>
+    <string name="error">Error!</string>
+    <string name="get_authtoken_by_features">Get Authtoken by features</string>
+    <string name="remove_account">Remove account</string>
+    <string name="account_removed_successfully">Account %s removed successfully</string>
+    <string name="my_account_preferences">My account preferences</string>
+    <string name="sync_contacts_summary">Sync your contacts</string>
+    <string name="sync_contacts">Sync contacts</string>
+
+</resources>

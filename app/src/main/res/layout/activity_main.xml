@@ -1,0 +1,46 @@
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/default_margin">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/add_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/add_account"/>
+
+        <Button
+            android:id="@+id/get_authtoken"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/get_authtoken"/>
+
+        <Button
+            android:id="@+id/get_authtoken_by_features"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/get_authtoken_by_features"/>
+
+        <Button
+            android:id="@+id/invalidate_auth_token"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/invalidate_auth_token"/>
+
+        <Button
+            android:id="@+id/remove_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/remove_account"/>
+    </LinearLayout>
+
+</ScrollView>

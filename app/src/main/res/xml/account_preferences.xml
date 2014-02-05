@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/my_account_preferences">
+        <SwitchPreference title="@string/sync_contacts" android:summary="@string/sync_contacts_summary" android:tag="sync_contacts" android:visibility="visible"/>
+    </PreferenceCategory>
+</PreferenceScreen>
