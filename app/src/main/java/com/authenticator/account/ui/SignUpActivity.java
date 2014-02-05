@@ -6,7 +6,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.authenticator.account.R;
@@ -15,7 +17,27 @@ import com.authenticator.account.auth.ServerAuthCallbacksFactory;
 import com.authenticator.account.exception.AuthException;
 import com.authenticator.account.interfaces.ServerAuthenticateCallbacks;
 
-public class SignUpActivity extends ActionBarActivity {
+import roboguice.activity.RoboFragmentActivity;
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
+
+@ContentView(R.layout.sign_up_activity)
+public class SignUpActivity extends RoboFragmentActivity {
+
+    @InjectView(R.id.username)
+    private EditText userNameText;
+
+    @InjectView(R.id.password)
+    private EditText passwordText;
+
+    @InjectView(R.id.email)
+    private EditText emailText;
+
+    @InjectView(R.id.submit)
+    private Button submitButton;
+
+    @InjectView(R.id.alreadyMember)
+    private TextView alreadyMemberButton;
 
     private String accountType;
 
@@ -46,26 +68,26 @@ public class SignUpActivity extends ActionBarActivity {
     }
 
     private String getUserName() {
-        return ((EditText) findViewById(R.id.username)).getText().toString().trim();
+        return userNameText.getText().toString().trim();
     }
 
     private String getPassword() {
-        return ((EditText) findViewById(R.id.password)).getText().toString().trim();
+        return passwordText.getText().toString().trim();
     }
 
     private String getEmail() {
-        return ((EditText) findViewById(R.id.email)).getText().toString().trim();
+        return emailText.getText().toString().trim();
     }
 
     private void setUpListeners() {
-        findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
+        submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createAccount();
             }
         });
 
-        findViewById(R.id.alreadyMember).setOnClickListener(new View.OnClickListener() {
+        alreadyMemberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setResult(RESULT_CANCELED);

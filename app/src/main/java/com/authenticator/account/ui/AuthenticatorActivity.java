@@ -19,10 +19,24 @@ import com.authenticator.account.auth.Auth;
 import com.authenticator.account.receiver.AuthorizationReceiver;
 import com.authenticator.account.service.AuthorizationService;
 
+import roboguice.activity.RoboAccountAuthenticatorActivity;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
-public class AuthenticatorActivity extends AccountAuthenticatorActivity {
+@ContentView(R.layout.authenticator_activity)
+public class AuthenticatorActivity extends RoboAccountAuthenticatorActivity {
+
+    @InjectView(R.id.username)
+    private EditText userNameText;
+
+    @InjectView(R.id.password)
+    private EditText passwordText;
+
+    @InjectView(R.id.submit)
+    private Button submitButton;
+
+    @InjectView(R.id.sign_up)
+    private TextView signUpLabel;
 
     private AccountManager accountManager;
     private String authTokenType;
@@ -102,26 +116,26 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     }
 
     public void setUserName(final String accountName) {
-        ((EditText)findViewById(R.id.username)).setText(accountName);
+        userNameText.setText(accountName);
     }
 
     public String getUserName() {
-        return ((EditText)findViewById(R.id.username)).getText().toString().trim();
+        return userNameText.getText().toString().trim();
     }
 
     private String getPassword() {
-        return ((EditText)findViewById(R.id.password)).getText().toString().trim();
+        return passwordText.getText().toString().trim();
     }
 
     private void setUpListeners() {
-        findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
+        submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onSubmit();
             }
         });
 
-        findViewById(R.id.sign_up).setOnClickListener(new View.OnClickListener() {
+        signUpLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onSignUp();
