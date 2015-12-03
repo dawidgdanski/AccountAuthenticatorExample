@@ -32,4 +32,6 @@
     <string name="sync_contacts_summary">Sync your contacts</string>
     <string name="sync_contacts">Sync contacts</string>
 
+    <string name="account_type">com.authenticator.account.example</string>
+
 </resources>

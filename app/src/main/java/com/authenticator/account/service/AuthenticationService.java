@@ -1,16 +1,23 @@
 package com.authenticator.account.service;
 
+import android.accounts.AbstractAccountAuthenticator;
 import android.app.Service;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.IBinder;
 
-import com.authenticator.account.auth.SimpleAuthenticator;
+import com.authenticator.account.authentication.SimpleAuthenticator;
 
 public class AuthenticationService extends Service {
 
+    private AbstractAccountAuthenticator authenticator;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        authenticator = new SimpleAuthenticator(this);
+    }
     @Override
     public IBinder onBind(Intent intent) {
-        return new SimpleAuthenticator(this).getIBinder();
+        return authenticator.getIBinder();
     }
 }

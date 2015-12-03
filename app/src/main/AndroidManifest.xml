@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:name=".App"
+        android:name=".AuthenticationApplication"
         android:theme="@style/AppTheme" >
 
         <activity
@@ -30,13 +30,7 @@
                 android:resource="@xml/authenticator"/>
         </service>
 
-        <service android:name=".service.AuthorizationService"/>
-
-        <receiver android:name=".receiver.AuthorizationReceiver">
-            <intent-filter>
-                <action android:name="com.authenticator.account.receiver.service.AuthorizationReceiver.BROADCAST"/>
-            </intent-filter>
-        </receiver>
+        <service android:name=".service.AuthService"/>
 
     </application>
 

@@ -2,9 +2,8 @@ package com.authenticator.account.ui;
 
 import android.accounts.AccountManager;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,32 +11,45 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.authenticator.account.R;
-import com.authenticator.account.auth.Auth;
-import com.authenticator.account.auth.ServerAuthCallbacksFactory;
-import com.authenticator.account.exception.AuthException;
-import com.authenticator.account.interfaces.ServerAuthenticateCallbacks;
+import com.authenticator.account.authentication.Constants;
+import com.authenticator.account.authentication.Credentials;
+import com.authenticator.account.broadcast.BroadcastManager;
+import com.authenticator.account.broadcast.auth.AccountCreationBroadcastMessage;
+import com.authenticator.account.di.DependencyInjector;
+import com.authenticator.account.di.Qualifiers;
+import com.authenticator.account.authentication.AuthenticationProvider;
+import com.authenticator.account.service.AuthService;
 
-import roboguice.activity.RoboFragmentActivity;
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-@ContentView(R.layout.sign_up_activity)
-public class SignUpActivity extends RoboFragmentActivity {
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-    @InjectView(R.id.username)
-    private EditText userNameText;
+public class SignUpActivity extends AppCompatActivity {
 
-    @InjectView(R.id.password)
-    private EditText passwordText;
+    @Bind(R.id.username)
+    EditText usernameText;
 
-    @InjectView(R.id.email)
-    private EditText emailText;
+    @Bind(R.id.password)
+    EditText passwordText;
 
-    @InjectView(R.id.submit)
-    private Button submitButton;
+    @Bind(R.id.email)
+    EditText emailText;
 
-    @InjectView(R.id.alreadyMember)
-    private TextView alreadyMemberButton;
+    @Bind(R.id.submit)
+    Button submitButton;
+
+    @Bind(R.id.alreadyMember)
+    TextView alreadyMemberButton;
+
+    @Inject
+    @Named(Qualifiers.PARSE_AUTHENTICATION_PROVIDER)
+    AuthenticationProvider authenticationProvider;
+
+    @Inject
+    BroadcastManager broadcastManager;
 
     private String accountType;
 
@@ -45,20 +57,10 @@ public class SignUpActivity extends RoboFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up_activity);
+        ButterKnife.bind(this);
+        DependencyInjector.getGraph().inject(this);
 
-        accountType = getIntent().getStringExtra(Auth.ACCOUNT_TYPE);
-
-        setUpListeners();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+        accountType = getIntent().getStringExtra(Constants.ACCOUNT_TYPE);
     }
 
     @Override
@@ -67,8 +69,56 @@ public class SignUpActivity extends RoboFragmentActivity {
         super.onBackPressed();
     }
 
-    private String getUserName() {
-        return userNameText.getText().toString().trim();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        broadcastManager.unregister(this);
+    }
+
+    @OnClick(R.id.submit)
+    void onSubmitButtonClick(View view) {
+
+        final String username = getUsername();
+        final String email = getEmail();
+        final String password = getPassword();
+
+        final Credentials credentials = Credentials.builder()
+                .setUsername(username)
+                .setEmail(email)
+                .setPassword(password)
+                .setAccountType(accountType)
+                .build();
+
+        broadcastManager.register(this);
+        AuthService.createAccount(this, credentials);
+    }
+
+    @SuppressWarnings("unused")
+    public void onEventMainThread(AccountCreationBroadcastMessage message) {
+        if (isFinishing()) {
+            return;
+        }
+
+        final Bundle data = message.getData();
+
+        if (data.containsKey(AccountManager.KEY_ERROR_MESSAGE)) {
+            Toast.makeText(SignUpActivity.this, data.getString(AccountManager.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+        } else {
+            final Intent intent = new Intent().putExtras(data);
+
+            setResult(RESULT_OK, intent);
+            finish();
+        }
+    }
+
+    @OnClick(R.id.alreadyMember)
+    void onAlreadyMemberButtonClick(View view) {
+        setResult(RESULT_CANCELED);
+        finish();
+    }
+
+    private String getUsername() {
+        return usernameText.getText().toString().trim();
     }
 
     private String getPassword() {
@@ -78,70 +128,4 @@ public class SignUpActivity extends RoboFragmentActivity {
     private String getEmail() {
         return emailText.getText().toString().trim();
     }
-
-    private void setUpListeners() {
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createAccount();
-            }
-        });
-
-        alreadyMemberButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setResult(RESULT_CANCELED);
-                finish();
-            }
-        });
-    }
-
-    private void createAccount() {
-        new AsyncTask<Void, Void, Intent>() {
-
-            private String userName;
-            private String email;
-            private String password;
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                userName = getUserName();
-                email = getEmail();
-                password = getPassword();
-            }
-
-            @Override
-            protected Intent doInBackground(Void... params) {
-                final ServerAuthenticateCallbacks serverAuthenticate = ServerAuthCallbacksFactory.construct(ServerAuthenticateCallbacks.Server.PARSE_COM);
-                final Intent resultIntent = new Intent();
-                try {
-                    String authToken = serverAuthenticate.onUserSignUp(userName, email, password, Auth.Access.AUTH_TOKEN_FULL_ACCESS);
-                    resultIntent.putExtra(AccountManager.KEY_ACCOUNT_NAME, email);
-                    resultIntent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, accountType);
-                    resultIntent.putExtra(AccountManager.KEY_AUTHTOKEN, authToken);
-                    resultIntent.putExtra(AccountManager.KEY_PASSWORD, password);
-                } catch (AuthException e) {
-                    resultIntent.putExtra(AccountManager.KEY_ERROR_MESSAGE, e.getMessage());
-                }
-
-                return resultIntent;
-            }
-
-            @Override
-            protected void onPostExecute(Intent intent) {
-                super.onPostExecute(intent);
-
-                if(intent.hasExtra(AccountManager.KEY_ERROR_MESSAGE)) {
-                    Toast.makeText(SignUpActivity.this, intent.getStringExtra(AccountManager.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
-                } else {
-                    setResult(RESULT_OK, intent);
-                    finish();
-                }
-            }
-
-        }.execute();
-    }
-
-
 }

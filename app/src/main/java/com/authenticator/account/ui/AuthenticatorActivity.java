@@ -3,10 +3,7 @@ package com.authenticator.account.ui;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,188 +12,152 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.authenticator.account.R;
-import com.authenticator.account.auth.Auth;
-import com.authenticator.account.receiver.AuthorizationReceiver;
-import com.authenticator.account.service.AuthorizationService;
+import com.authenticator.account.authentication.Constants;
+import com.authenticator.account.authentication.Credentials;
+import com.authenticator.account.broadcast.BroadcastManager;
+import com.authenticator.account.broadcast.auth.SignInBroadcastMessage;
+import com.authenticator.account.di.DependencyInjector;
+import com.authenticator.account.service.AuthService;
 
-import roboguice.activity.RoboAccountAuthenticatorActivity;
-import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
+import javax.inject.Inject;
 
-@ContentView(R.layout.authenticator_activity)
-public class AuthenticatorActivity extends RoboAccountAuthenticatorActivity {
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-    @InjectView(R.id.username)
-    private EditText userNameText;
+public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
-    @InjectView(R.id.password)
-    private EditText passwordText;
+    private static final int SIGN_UP_REQUEST = 1;
 
-    @InjectView(R.id.submit)
-    private Button submitButton;
+    @Bind(R.id.username)
+    EditText usernameText;
 
-    @InjectView(R.id.sign_up)
-    private TextView signUpLabel;
+    @Bind(R.id.password)
+    EditText passwordText;
 
-    private AccountManager accountManager;
+    @Bind(R.id.submit)
+    Button submitButton;
+
+    @Bind(R.id.sign_up)
+    TextView signUpLabel;
+
+    @Inject
+    AccountManager accountManager;
+
+    @Inject
+    BroadcastManager broadcastManager;
+
     private String authTokenType;
 
-    private final int SIGN_UP_REQUEST = 1;
-
-    private final BroadcastReceiver authorizationReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            abortBroadcast();
-            onSigningInFinished(intent);
-        }
-    };
-
-    private final IntentFilter authResponseIntentFilter;
-
-    {
-        authResponseIntentFilter = new IntentFilter(AuthorizationReceiver.BROADCAST);
-        authResponseIntentFilter.setPriority(2);
-    }
-
     @Override
-    protected void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.authenticator_activity);
+        ButterKnife.bind(this);
+        DependencyInjector.getGraph().inject(this);
 
-        accountManager = AccountManager.get(this);
+        Bundle extras = getIntent().getExtras();
 
-        Intent intent = getIntent();
+        authTokenType = extras.getString(Constants.AUTH_TOKEN_TYPE, Constants.Access.AUTH_TOKEN_FULL_ACCESS);
 
-        final String accountName = intent.getStringExtra(Auth.ACCOUNT_NAME);
-        authTokenType = intent.getStringExtra(Auth.AUTH_TOKEN_TYPE);
+        final String accountName = extras.getString(Constants.ACCOUNT_NAME);
 
-        if(authTokenType == null) {
-            authTokenType = Auth.Access.AUTH_TOKEN_FULL_ACCESS;
-        }
-
-        if(accountName != null) {
-            setUserName(accountName);
-        }
-
-        setUpListeners();
+        setUsername(accountName);
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        try {
-            unregisterReceiver(authorizationReceiver);
-        } catch(RuntimeException e) { }
+    protected void onDestroy() {
+        super.onDestroy();
+        broadcastManager.unregister(this);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        switch(requestCode) {
+        switch (requestCode) {
             case SIGN_UP_REQUEST:
                 onUserSignedUp(resultCode, data);
                 break;
             default:
                 throw new IllegalArgumentException(AuthenticatorActivity.class.getSimpleName() +
-                                                   ": Unhandled request code: " +
-                                                   requestCode);
+                        ": Unhandled request code: " +
+                        requestCode);
         }
 
     }
 
-    public void setUserName(final String accountName) {
-        userNameText.setText(accountName);
-    }
-
-    public String getUserName() {
-        return userNameText.getText().toString().trim();
-    }
-
-    private String getPassword() {
-        return passwordText.getText().toString().trim();
-    }
-
-    private void setUpListeners() {
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSubmit();
-            }
-        });
-
-        signUpLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSignUp();
-            }
-        });
-    }
-
-    private void onSubmit() {
-        final String userName = getUserName();
+    @OnClick(R.id.submit)
+    void onSignInButtonClicked(View view) {
+        final String username = getUsername();
         final String password = getPassword();
-        final String accountType = getIntent().getStringExtra(Auth.ACCOUNT_TYPE);
+        final String accountType = getIntent().getStringExtra(Constants.ACCOUNT_TYPE);
 
-        final Intent serviceIntent = new Intent(this, AuthorizationService.class);
-        serviceIntent.putExtra(Auth.USER_NAME, userName);
-        serviceIntent.putExtra(Auth.PASSWORD, password);
-        serviceIntent.putExtra(Auth.ACCOUNT_TYPE, accountType);
-        serviceIntent.putExtra(Auth.AUTH_TOKEN_TYPE, authTokenType);
+        final Credentials credentials = Credentials.builder()
+                .setUsername(username)
+                .setPassword(password)
+                .setAccountType(accountType)
+                .setAuthTokenType(authTokenType)
+                .build();
 
-        registerReceiver(authorizationReceiver, authResponseIntentFilter);
-        startService(serviceIntent);
+        broadcastManager.register(this);
+        AuthService.signIn(this, credentials);
     }
 
-    private void onSignUp() {
+    @OnClick(R.id.sign_up)
+    void onSignUpButtonClicked(View view) {
         final Intent signUpIntent = new Intent(this, SignUpActivity.class);
         Bundle arguments = getIntent().getExtras();
-        if(arguments != null) {
+        if (arguments != null) {
             signUpIntent.putExtras(arguments);
         }
         startActivityForResult(signUpIntent, SIGN_UP_REQUEST);
     }
 
-    private void onSigningInFinished(final Intent resultIntent) {
+    @SuppressWarnings("unused")
+    public void onEventMainThread(SignInBroadcastMessage signInBroadcastMessage) {
+        onSigningInFinished(signInBroadcastMessage.getData());
+    }
 
-        if(resultIntent.hasExtra(AccountManager.KEY_ERROR_MESSAGE)) {
-            onSignInErrorHandle(resultIntent.getStringExtra(AccountManager.KEY_ERROR_MESSAGE));
+    void setUsername(final String accountName) {
+        usernameText.setText(accountName);
+    }
+
+    String getUsername() {
+        return usernameText.getText().toString().trim();
+    }
+
+    String getPassword() {
+        return passwordText.getText().toString().trim();
+    }
+
+    private void onSigningInFinished(final Bundle result) {
+
+        if (result.containsKey(AccountManager.KEY_ERROR_MESSAGE)) {
+            onSignInErrorHandle(result.getString(AccountManager.KEY_ERROR_MESSAGE));
         } else {
-            addAccountOrUpdateWithPassword(resultIntent);
-            setAccountAuthenticatorResult(resultIntent.getExtras());
+            addAccountOrUpdateWithPassword(result);
+            setAccountAuthenticatorResult(result);
+            Intent resultIntent = new Intent().putExtras(result);
             setResult(RESULT_OK, resultIntent);
             finish();
         }
-        try {
-            unregisterReceiver(authorizationReceiver);
-        } catch(RuntimeException e) { }
     }
 
     private void onSignInErrorHandle(final String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
-    private void addAccountOrUpdateWithPassword(final Intent resultIntent) {
-        String accountName = resultIntent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-        String accountPassword = resultIntent.getStringExtra(AccountManager.KEY_PASSWORD);
-        String accountType = resultIntent.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE);
+    private void addAccountOrUpdateWithPassword(final Bundle bundle) {
+        String accountName = bundle.getString(AccountManager.KEY_ACCOUNT_NAME);
+        String accountPassword = bundle.getString(AccountManager.KEY_PASSWORD);
+        String accountType = bundle.getString(AccountManager.KEY_ACCOUNT_TYPE);
 
-        boolean isAddingNewAccount = getIntent().getBooleanExtra(Auth.IS_NEW_ACCOUNT, false);
+        boolean isAddingNewAccount = getIntent().getBooleanExtra(Constants.IS_NEW_ACCOUNT, false);
 
         final Account account = new Account(accountName, accountType);
 
-        if(isAddingNewAccount) {
-            String authToken = resultIntent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
+        if (isAddingNewAccount) {
+            String authToken = bundle.getString(AccountManager.KEY_AUTHTOKEN);
 
             accountManager.addAccountExplicitly(account, accountPassword, null);
             accountManager.setAuthToken(account, authTokenType, authToken);
@@ -206,8 +167,8 @@ public class AuthenticatorActivity extends RoboAccountAuthenticatorActivity {
     }
 
     private void onUserSignedUp(final int resultCode, final Intent intent) {
-        if(resultCode == RESULT_OK) {
-            onSigningInFinished(intent);
+        if (resultCode == RESULT_OK) {
+            onSigningInFinished(intent.getExtras());
         }
     }
 
