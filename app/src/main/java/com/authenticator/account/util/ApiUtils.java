@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 import com.authenticator.account.BuildConfig;
 import com.facebook.stetho.Stetho;
 
-public final class Utils {
+public final class ApiUtils {
 
-    private Utils() {
+    private ApiUtils() {
 
     }
 
