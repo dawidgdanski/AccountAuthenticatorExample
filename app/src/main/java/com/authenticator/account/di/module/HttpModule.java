@@ -2,6 +2,8 @@ package com.authenticator.account.di.module;
 
 import android.content.Context;
 
+import com.authenticator.account.BuildConfig;
+import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -36,6 +38,10 @@ public class HttpModule {
         httpClient.setConnectTimeout(CONNECTION_TIMEOUT, TIMEOUT_TIME_UNIT);
         httpClient.setReadTimeout(READ_TIMEOUT, TIMEOUT_TIME_UNIT);
         httpClient.setWriteTimeout(WRITE_TIMEOUT, TIMEOUT_TIME_UNIT);
+
+        if(BuildConfig.DEBUG) {
+            httpClient.networkInterceptors().add(new StethoInterceptor());
+        }
 
         return httpClient;
     }

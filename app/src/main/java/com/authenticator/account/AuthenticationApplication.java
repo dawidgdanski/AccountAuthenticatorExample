@@ -9,7 +9,8 @@ import com.authenticator.account.di.module.ApplicationModule;
 import com.authenticator.account.di.module.AuthenticationModule;
 import com.authenticator.account.di.module.BroadcastModule;
 import com.authenticator.account.di.module.HttpModule;
-import com.parse.Parse;
+import com.authenticator.account.util.Utils;
+import com.squareup.leakcanary.LeakCanary;
 
 public class AuthenticationApplication extends Application implements ModuleProvisionContract {
 
@@ -17,6 +18,13 @@ public class AuthenticationApplication extends Application implements ModuleProv
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         DependencyInjector.initialize(this);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        LeakCanary.install(this);
+        Utils.installStetho(this);
     }
 
     @Override

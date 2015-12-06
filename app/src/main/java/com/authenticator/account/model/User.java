@@ -7,8 +7,6 @@ import java.io.Serializable;
 @AutoValue
 public abstract class User implements Serializable {
 
-    public static final String JSON_SESSION_TOKEN = "sessionToken";
-
     public static User.Builder builder() {
         return new AutoValue_User.Builder();
     }

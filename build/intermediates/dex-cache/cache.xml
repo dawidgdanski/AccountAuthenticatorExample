@@ -2,172 +2,32 @@
 <items version="2" >
 
     <item
-        jar="/usr/local/sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1.jar"
+        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.facebook.stetho/stetho-okhttp/1.2.0/6c5c9380e245c4ff5be2b2a49dcbb0200c39798e/stetho-okhttp-1.2.0.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/support-annotations-23.1.1-813283c1e6da3cb09db93fda33c52ff10a8858ef.jar" />
+        sha1="6c5c9380e245c4ff5be2b2a49dcbb0200c39798e">
+        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/stetho-okhttp-1.2.0-9d37416869a30b36797ad4c0c315f78853539dfc.jar" />
     </item>
     <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.parse.bolts/bolts-android/1.2.1/44780c2cf98f6a3cf4e77f1234d644758b329201/bolts-android-1.2.1.jar"
+        jar="/Users/David/.gradle/caches/modules-2/files-2.1/commons-cli/commons-cli/1.2/2bf96b7aa8b611c177d329452af1dc933e14501c/commons-cli-1.2.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="44780c2cf98f6a3cf4e77f1234d644758b329201">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/bolts-android-1.2.1-c64ab134379192a2b61c4d26b22e110bbe38aa5e.jar" />
+        sha1="2bf96b7aa8b611c177d329452af1dc933e14501c">
+        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/commons-cli-1.2-69db68134b05ad836f71e841b4a1908772ac8441.jar" />
     </item>
     <item
-        jar="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars/classes.jar"
+        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/2.0.1/516c03b21d50a644d538de0f0369c620989cd8f0/jsr305-2.0.1.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/classes-e8b4a272bbcac3315bf4750661dda73e26f6703b.jar" />
+        sha1="516c03b21d50a644d538de0f0369c620989cd8f0">
+        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/jsr305-2.0.1-12b980c5d7aa4499a8525fa6d2693b0eb17004b8.jar" />
     </item>
     <item
-        jar="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/exploded-aar/io.reactivex/rxandroid/1.0.1/jars/classes.jar"
+        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.facebook.stetho/stetho/1.2.0/1d6cdb8ce8185b8b23213fad48a83987fb6d2d67/stetho-1.2.0.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="aa81bfe8c5cc88c2472ca936ae71f0c3dd1766df">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/classes-62a04ebcd8500ef6b95556605490b276c6566fa0.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.google.dagger/dagger/2.0.2/de8416eda7b2fd7c25836b140c39e1cbf10542f6/dagger-2.0.2.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="de8416eda7b2fd7c25836b140c39e1cbf10542f6">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/dagger-2.0.2-b9ab481d1fe5838fdc00a4087d4d552c46a25228.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/de.greenrobot/eventbus/2.4.0/ddd166d01b3158d1c00576d29f7ed15c030df719/eventbus-2.4.0.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="ddd166d01b3158d1c00576d29f7ed15c030df719">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/eventbus-2.4.0-c116f6caf3c00ff81fc277c1cabb2c640b5f1260.jar" />
-    </item>
-    <item
-        jar="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/exploded-aar/com.squareup.leakcanary/leakcanary-android/1.3/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="f4e7adebf49e683db82fb6efac2caaf3d768b8d4">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/classes-16d4968a9becc7e17044ccd64b3d5f6bffb57df0.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit/retrofit/2.0.0-beta2/880d9e0997b2d1bfc98e0d121ced33ee5d04aac4/retrofit-2.0.0-beta2.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="880d9e0997b2d1bfc98e0d121ced33ee5d04aac4">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/retrofit-2.0.0-beta2-d82e6db83c4923ead3f64b5df33b6eae1edc97cc.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit/converter-moshi/2.0.0-beta2/46d6c1e18f86b205d8e7155191c42d5b78d81cf7/converter-moshi-2.0.0-beta2.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="46d6c1e18f86b205d8e7155191c42d5b78d81cf7">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/converter-moshi-2.0.0-beta2-ca3dd6cac0d8b3592188f414cb39593e9458e88e.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.jakewharton/butterknife/7.0.1/d5d13ea991eab0252e3710e5df3d6a9d4b21d461/butterknife-7.0.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="d5d13ea991eab0252e3710e5df3d6a9d4b21d461">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/butterknife-7.0.1-1769476addc91a33b8b9de895ab52d93355ae06b.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.parse/parse-android/1.10.3/36366e460af2c0f224bb8f70b64e3302f638b138/parse-android-1.10.3.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="36366e460af2c0f224bb8f70b64e3302f638b138">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/parse-android-1.10.3-9c42358aa4ea28e9cb117fa5c04d141817951aed.jar" />
-    </item>
-    <item
-        jar="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.1.1/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="09c5e804bc67fc0580360043dff067df574a60d4">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/classes-f112b8788d55e6c6f306476d1f3f38a2c58bef61.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.squareup.leakcanary/leakcanary-watcher/1.3/632482a61ad24b7ec864072945d221369f9a606/leakcanary-watcher-1.3.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="0632482a61ad24b7ec864072945d221369f9a606">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/leakcanary-watcher-1.3-4300f83b0ad146120ed23b4bc9943ed4aa44232f.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.squareup.leakcanary/leakcanary-analyzer/1.3/c5399b18a672f7973c8a9b9d6b731a3a36e590cc/leakcanary-analyzer-1.3.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="c5399b18a672f7973c8a9b9d6b731a3a36e590cc">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/leakcanary-analyzer-1.3-9bbe476eff538092ebdcd03a4cf536f8d0d74342.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/io.reactivex/rxjava/1.0.15/f0ab8b7c8010cad33b8debda5d09d233571dc486/rxjava-1.0.15.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="f0ab8b7c8010cad33b8debda5d09d233571dc486">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/rxjava-1.0.15-2a9ec2c1e08a627c14e1548d1d68fcea21c40695.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.squareup.haha/haha/1.1/b7b2e61ee1ad2d1ac6ae3122de9c940fb0d0e635/haha-1.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="b7b2e61ee1ad2d1ac6ae3122de9c940fb0d0e635">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/haha-1.1-325fd2ae45609618aed21efd8e1a4d10867dbe59.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.5.0/4de2b4ed3445c37ec1720a7d214712e845a24636/okhttp-2.5.0.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="4de2b4ed3445c37ec1720a7d214712e845a24636">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/okhttp-2.5.0-9cd004241fcd5b81ec5e86fb3975d015ec38c616.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.6.0/98476622f10715998eacf9240d6b479f12c66143/okio-1.6.0.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="98476622f10715998eacf9240d6b479f12c66143">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/okio-1.6.0-c6e191d004fe7fdac74c175ab88503fe2b36c5b7.jar" />
-    </item>
-    <item
-        jar="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/classes-a6b48c7d50752244b6d699b59d0d5a7ceeb26942.jar" />
-    </item>
-    <item
-        jar="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/libs/internal_impl-23.1.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/internal_impl-23.1.1-3651bc53b6d6f45cb7714a8a655e69afc642cbc7.jar" />
-    </item>
-    <item
-        jar="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/exploded-aar/com.android.support/design/23.1.1/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="379471b2bd17d9737c050345c08e8c7d16589784">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/classes-3b00c6cf59113188a677382daa7f9328fc2a4889.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/18.0/cce0823396aa693798f8882e64213b1772032b09/guava-18.0.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="cce0823396aa693798f8882e64213b1772032b09">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/guava-18.0-871ffa5d9a8e8602cc1b5e53168c9827d9468d76.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/javax.inject/javax.inject/1/6975da39a7040257bd51d21a231b76c915872d38/javax.inject-1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="6975da39a7040257bd51d21a231b76c915872d38">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/javax.inject-1-b74bdf00a6ab82dce787e35bf0c517463058fec6.jar" />
-    </item>
-    <item
-        jar="/Users/David/.gradle/caches/modules-2/files-2.1/com.squareup.moshi/moshi/1.0.0/a74d4a4ede7eb65461dbcc0e9e75aefe48a3749a/moshi-1.0.0.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="a74d4a4ede7eb65461dbcc0e9e75aefe48a3749a">
-        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/moshi-1.0.0-1e62fd1a29857c38bf415d99c7802179992da4b4.jar" />
+        sha1="1d6cdb8ce8185b8b23213fad48a83987fb6d2d67">
+        <dex dex="/Users/David/OpenSourceProjects/AccountAuthenticatorExample/app/build/intermediates/pre-dexed/debug/stetho-1.2.0-d1397f0a2e00635e1543232523c0d19ee45066cf.jar" />
     </item>
 
 </items>

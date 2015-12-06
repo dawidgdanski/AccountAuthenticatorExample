@@ -6,3 +6,4 @@
 gradle/*
 gradlew*
 app/build/*
+/build/*

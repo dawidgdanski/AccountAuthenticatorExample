@@ -15,14 +15,17 @@ import android.widget.Toast;
 
 import com.authenticator.account.R;
 import com.authenticator.account.authentication.Constants;
+import com.authenticator.account.controller.BackgroundExecutor;
+import com.authenticator.account.controller.DefaultBackgroundExecutor;
+import com.authenticator.account.di.DependencyInjector;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
-
-    private AccountManager accountManager;
 
     @Bind(R.id.add_account)
     Button addAccountButton;
@@ -39,12 +42,25 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.remove_account)
     Button removeAccountButton;
 
+    @Inject
+    AccountManager accountManager;
+
+    private BackgroundExecutor executor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        accountManager = AccountManager.get(this);
+        DependencyInjector.getGraph().inject(this);
+        executor = new DefaultBackgroundExecutor();
+    }
+
+    @Override
+    protected void onDestroy() {
+        executor.finish();
+        executor = null;
+        super.onDestroy();
     }
 
     @OnClick(R.id.add_account)
@@ -138,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
         if (accountsNames.length == 0) {
             showMessage(getString(R.string.no_accounts_created));
         } else {
-            final ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, accountsNames);
+            final ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, accountsNames);
             new AlertDialog.Builder(this)
                     .setTitle(getString(R.string.pick_account))
                     .setAdapter(adapter, listener)
@@ -149,8 +165,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showExistingAccountAuthToken(final Account account, final String authTokenType) {
         final AccountManagerFuture<Bundle> future = accountManager.getAuthToken(account, authTokenType, null, this, null, null);
-
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 Bundle bnd = future.getResult();
 
@@ -161,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
                 showMessage(e.getMessage());
             }
-        }).start();
+        });
     }
 
     private void invalidateAuthToken(final Account account, final String authTokenType) {
@@ -171,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
                 this,
                 null,
                 null);
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 Bundle result = future.getResult();
                 final String authtoken = result.getString(AccountManager.KEY_AUTHTOKEN);
@@ -181,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
                 showMessage(e.getMessage());
             }
-        }).start();
+        });
     }
 
     private void showMessage(final String message) {

@@ -7,6 +7,7 @@ import com.authenticator.account.di.module.BroadcastModule;
 import com.authenticator.account.di.module.HttpModule;
 import com.authenticator.account.service.AuthService;
 import com.authenticator.account.ui.AuthenticatorActivity;
+import com.authenticator.account.ui.MainActivity;
 import com.authenticator.account.ui.SignUpActivity;
 
 import javax.inject.Singleton;
@@ -24,4 +25,5 @@ public interface DependencyGraph {
         void inject(AuthService authService);
         void inject(SignUpActivity signUpActivity);
         void inject(AuthenticatorActivity activity);
+        void inject(MainActivity activity);
 }
