@@ -20,7 +20,7 @@ public class DefaultBackgroundExecutor implements BackgroundExecutor {
     }
 
     @Override
-    public synchronized void finish() {
+    public synchronized void destroy() {
         for(Subscription subscription : subscriptions) {
             subscription.unsubscribe();
         }

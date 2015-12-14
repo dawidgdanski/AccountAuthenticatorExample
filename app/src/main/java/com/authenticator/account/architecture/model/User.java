@@ -1,4 +1,4 @@
-package com.authenticator.account.model;
+package com.authenticator.account.architecture.model;
 
 import com.google.auto.value.AutoValue;
 

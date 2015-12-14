@@ -1,23 +1,25 @@
 package com.authenticator.account.ui;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.accounts.AccountManagerFuture;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.authenticator.account.R;
+import com.authenticator.account.architecture.presentation.DefaultMainPresenter;
 import com.authenticator.account.authentication.Constants;
-import com.authenticator.account.controller.BackgroundExecutor;
-import com.authenticator.account.controller.DefaultBackgroundExecutor;
 import com.authenticator.account.di.DependencyInjector;
+import com.authenticator.account.architecture.view.MainView;
+import com.authenticator.account.util.Utils;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -25,7 +27,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainView {
 
     @Bind(R.id.add_account)
     Button addAccountButton;
@@ -43,182 +45,106 @@ public class MainActivity extends AppCompatActivity {
     Button removeAccountButton;
 
     @Inject
-    AccountManager accountManager;
-
-    private BackgroundExecutor executor;
+    @ActivityScope
+    DefaultMainPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        bindViews();
+        injectMembers();
+    }
+
+    protected void bindViews() {
         ButterKnife.bind(this);
-        DependencyInjector.getGraph().inject(this);
-        executor = new DefaultBackgroundExecutor();
+    }
+
+    protected void injectMembers() {
+        DependencyInjector.activityComponent(this).inject(this);
     }
 
     @Override
     protected void onDestroy() {
-        executor.finish();
-        executor = null;
+        presenter.destroy();
         super.onDestroy();
     }
 
     @OnClick(R.id.add_account)
     void onAddAccountButtonClick(View view) {
-        addNewAccount(Constants.ACCOUNT_TYPE, Constants.Access.AUTH_TOKEN_FULL_ACCESS);
+        presenter.addNewAccount(Constants.Access.AUTH_TOKEN_FULL_ACCESS);
     }
 
     @OnClick(R.id.get_authtoken)
     void onObtainAuthenticationTokenButtonClick(View view) {
-        showAccountsPicker((dialog, which) -> {
-            final Account account = getAccountsByType()[which];
-            showExistingAccountAuthToken(account, Constants.Access.AUTH_TOKEN_FULL_ACCESS);
-        });
+        presenter.showAccountsPicker((dialog, which) -> presenter.loadExistingAccountAuthToken(
+                which,
+                Constants.Access.AUTH_TOKEN_FULL_ACCESS)
+        );
     }
 
     @OnClick(R.id.get_authtoken_by_features)
     void onGetAuthenticationTokenByFeaturesButtonClick(View view) {
-        addAccountIfNeededAndShowAuthToken(Constants.ACCOUNT_TYPE, Constants.Access.AUTH_TOKEN_FULL_ACCESS);
+        presenter.getAuthenticationTokenByFeatures(Constants.Access.AUTH_TOKEN_FULL_ACCESS);
     }
 
     @OnClick(R.id.invalidate_auth_token)
     void onInvalidateAuthTokenButtonClick(View view) {
-        showAccountsPicker((dialog, which) -> {
-            final Account account = getAccountsByType()[which];
-            invalidateAuthToken(account, Constants.Access.AUTH_TOKEN_FULL_ACCESS);
-        });
+        presenter.showAccountsPicker((dialog, which) -> presenter.invalidateAuthToken(
+                which,
+                Constants.Access.AUTH_TOKEN_FULL_ACCESS)
+        );
     }
 
     @OnClick(R.id.remove_account)
     void onRemoveAccountButtonClick(View view) {
-        showAccountsPicker((dialog, which) -> {
-            final Account account = getAccountsByType()[which];
-            removeAccount(account);
-        });
+        presenter.showAccountsPicker((dialog, which) -> presenter.removeAccount(which));
     }
 
-    private void removeAccount(final Account account) {
-        accountManager.removeAccount(account, future -> {
-            try {
-                future.getResult();
-                showMessage(getString(R.string.account_removed_successfully, account.name));
-            } catch (Exception e) {
-                e.printStackTrace();
-                showMessage(e.getMessage());
-            }
-        },
-                null);
+    @Override
+    public void onAccountAdded() {
+        showMessage(getString(R.string.account_created_successfully));
     }
 
-    private void addNewAccount(String accountType, String authTokenType) {
-        accountManager.addAccount(accountType,
-                authTokenType,
-                null,
-                null,
-                this,
-                future1 -> {
-                    try {
-                        future1.getResult();
-                        showMessage(getString(R.string.account_created_successfully));
-                    } catch (Exception e) {
-                        showMessage(e.getMessage());
-                    }
-                },
-                null);
-
+    @Override
+    public void onErrorOccured(@NonNull String message) {
+        showMessage(message);
     }
 
-    private void addAccountIfNeededAndShowAuthToken(final String accountType, final String authTokenType) {
-        accountManager.getAuthTokenByFeatures(accountType,
-                authTokenType,
-                null,
-                this,
-                null,
-                null,
-                future1 -> {
-                    try {
-                        Bundle data = future1.getResult();
-                        final String authToken = data.getString(AccountManager.KEY_AUTHTOKEN);
-                        showMessage(getString(R.string.authtoken, authToken));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        showMessage(e.getMessage());
-                    }
-                }, null);
-
-
+    @Override
+    public void onRequestedTokenObtained(@Nullable String authToken) {
+        showMessage(getString(R.string.authtoken, authToken));
     }
 
-    private void showAccountsPicker(final DialogInterface.OnClickListener listener) {
-        final String[] accountsNames = getAccountsNamesByType();
-        if (accountsNames.length == 0) {
-            showMessage(getString(R.string.no_accounts_created));
+    @Override
+    public void onAccountRemoved(@NonNull Account account) {
+        showMessage(getString(R.string.account_removed_successfully, account.name));
+    }
+
+    @Override
+    public void onAuthTokenLoaded(@NonNull String authtoken) {
+        showMessage(getString(R.string.authtoken, authtoken));
+    }
+
+    @Override
+    public void onAuthTokenInvalidated(@NonNull Account account) {
+        showMessage(getString(R.string.account_invalidated, account.name));
+    }
+
+    @Override
+    public void onNoAccountsCreated() {
+        showMessage(getString(R.string.no_accounts_created));
+    }
+
+    private void showMessage(@Nullable final String message) {
+        if (TextUtils.isEmpty(message)) {
+            return;
+        }
+
+        if (Utils.isThisAMainThread()) {
+            Utils.showToast(MainActivity.this, message);
         } else {
-            final ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, accountsNames);
-            new AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.pick_account))
-                    .setAdapter(adapter, listener)
-                    .create()
-                    .show();
+            runOnUiThread(() -> Utils.showToast(MainActivity.this, message));
         }
-    }
-
-    private void showExistingAccountAuthToken(final Account account, final String authTokenType) {
-        final AccountManagerFuture<Bundle> future = accountManager.getAuthToken(account, authTokenType, null, this, null, null);
-        executor.execute(() -> {
-            try {
-                Bundle bnd = future.getResult();
-
-                final String authtoken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
-                showMessage(authtoken != null ? getString(R.string.authtoken, authtoken)
-                        : getString(R.string.error));
-            } catch (Exception e) {
-                e.printStackTrace();
-                showMessage(e.getMessage());
-            }
-        });
-    }
-
-    private void invalidateAuthToken(final Account account, final String authTokenType) {
-        final AccountManagerFuture<Bundle> future = accountManager.getAuthToken(account,
-                authTokenType,
-                null,
-                this,
-                null,
-                null);
-        executor.execute(() -> {
-            try {
-                Bundle result = future.getResult();
-                final String authtoken = result.getString(AccountManager.KEY_AUTHTOKEN);
-                accountManager.invalidateAuthToken(account.type, authtoken);
-                showMessage(getString(R.string.account_invalidated, account.name));
-            } catch (Exception e) {
-                e.printStackTrace();
-                showMessage(e.getMessage());
-            }
-        });
-    }
-
-    private void showMessage(final String message) {
-        if (!TextUtils.isEmpty(message)) {
-            runOnUiThread(() -> Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show());
-        }
-    }
-
-    private String[] getAccountsNamesByType() {
-        Account[] availableAccounts = getAccountsByType();
-
-        String[] names = new String[availableAccounts.length];
-
-        int index = 0;
-        for (final Account account : availableAccounts) {
-            names[index++] = account.name;
-        }
-
-        return names;
-    }
-
-    private Account[] getAccountsByType() {
-        return accountManager.getAccountsByType(Constants.ACCOUNT_TYPE);
     }
 }

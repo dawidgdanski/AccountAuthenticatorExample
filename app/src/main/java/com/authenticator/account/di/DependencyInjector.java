@@ -1,7 +1,13 @@
 package com.authenticator.account.di;
 
-import com.authenticator.account.AuthenticationApplication;
+import android.app.Activity;
+import android.support.annotation.NonNull;
+
+import com.authenticator.account.ui.ActivityComponent;
+import com.authenticator.account.ui.ActivityModule;
+import com.authenticator.account.ui.DaggerActivityComponent;
 import com.google.common.base.Preconditions;
+import com.squareup.leakcanary.RefWatcher;
 
 public class DependencyInjector {
 
@@ -13,8 +19,8 @@ public class DependencyInjector {
     private DependencyInjector() {
     }
 
-    public static synchronized void initialize(AuthenticationApplication application) {
-        dependencyGraph = MainComponent.Initializer.initialize(application, application);
+    public static synchronized void initialize(ModuleSupplier supplier) {
+        dependencyGraph = MainComponent.Initializer.initialize(supplier);
     }
 
     public static synchronized boolean isInitialized() {
@@ -22,9 +28,19 @@ public class DependencyInjector {
     }
 
     public static synchronized DependencyGraph getGraph() {
-        Preconditions.checkNotNull(isInitialized(), PRECONDITION_MESSAGE_GRAPH_NOT_INITIALIZED);
+        Preconditions.checkState(isInitialized(), PRECONDITION_MESSAGE_GRAPH_NOT_INITIALIZED);
 
         return dependencyGraph;
     }
 
+    public static ActivityComponent activityComponent(@NonNull final Activity activity) {
+        return DaggerActivityComponent.builder()
+                .dependencyGraph(getGraph())
+                .activityModule(new ActivityModule(activity))
+                .build();
+    }
+
+    public static RefWatcher refWatcher() {
+        return getGraph().refWatcher().get();
+    }
 }

@@ -20,5 +20,6 @@ ext {
 allprojects {
     repositories {
         jcenter()
+        maven {url "https://clojars.org/repo/"}
     }
 }

@@ -14,7 +14,7 @@ import com.authenticator.account.R;
 import com.authenticator.account.di.DependencyInjector;
 import com.authenticator.account.di.Qualifiers;
 import com.authenticator.account.exception.AuthenticationException;
-import com.authenticator.account.ui.AuthenticatorActivity;
+import com.authenticator.account.ui.SignInActivity;
 import com.google.common.base.Objects;
 
 import javax.inject.Inject;
@@ -51,7 +51,7 @@ public class SimpleAuthenticator extends AbstractAccountAuthenticator {
                              String[] requiredFeatures,
                              Bundle options) throws NetworkErrorException {
 
-        final Intent intent = new Intent(context, AuthenticatorActivity.class)
+        final Intent intent = new Intent(context, SignInActivity.class)
                 .putExtra(Constants.ACCOUNT_TYPE, accountType)
                 .putExtra(Constants.AUTH_TOKEN_TYPE, authTokenType)
                 .putExtra(Constants.IS_NEW_ACCOUNT, true)
@@ -109,7 +109,7 @@ public class SimpleAuthenticator extends AbstractAccountAuthenticator {
             return result;
         }
 
-        final Intent intent = new Intent(context, AuthenticatorActivity.class)
+        final Intent intent = new Intent(context, SignInActivity.class)
                 .putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
                 .putExtra(Constants.ACCOUNT_TYPE, account.type)
                 .putExtra(Constants.AUTH_TOKEN_TYPE, authTokenType)

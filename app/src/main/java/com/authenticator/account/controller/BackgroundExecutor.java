@@ -6,6 +6,6 @@ public interface BackgroundExecutor {
 
     void execute(Action0 action);
 
-    void finish();
+    void destroy();
 
 }

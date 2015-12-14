@@ -1,17 +1,13 @@
 package com.authenticator.account.authentication;
 
-import com.authenticator.account.model.ParseResponse;
+import com.authenticator.account.architecture.model.ParseResponse;
 import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 
 import retrofit.Call;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.Header;
-import retrofit.http.Headers;
 import retrofit.http.POST;
-import retrofit.http.Path;
 import retrofit.http.Query;
 
 public interface ParseAuthenticationService {

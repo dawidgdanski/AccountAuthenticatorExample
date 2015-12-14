@@ -1,33 +1,28 @@
 package com.authenticator.account.ui;
 
-import android.accounts.AccountManager;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.authenticator.account.R;
-import com.authenticator.account.authentication.Constants;
-import com.authenticator.account.authentication.Credentials;
-import com.authenticator.account.broadcast.BroadcastManager;
-import com.authenticator.account.broadcast.auth.AccountCreationBroadcastMessage;
+import com.authenticator.account.architecture.presentation.DefaultSignUpPresenter;
+import com.authenticator.account.architecture.presentation.SignUpPresenter;
+import com.authenticator.account.architecture.view.SignUpView;
 import com.authenticator.account.di.DependencyInjector;
-import com.authenticator.account.di.Qualifiers;
-import com.authenticator.account.authentication.AuthenticationProvider;
-import com.authenticator.account.service.AuthService;
+import com.authenticator.account.util.Utils;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity implements SignUpView {
 
     @Bind(R.id.username)
     EditText usernameText;
@@ -45,22 +40,15 @@ public class SignUpActivity extends AppCompatActivity {
     TextView alreadyMemberButton;
 
     @Inject
-    @Named(Qualifiers.PARSE_AUTHENTICATION_PROVIDER)
-    AuthenticationProvider authenticationProvider;
-
-    @Inject
-    BroadcastManager broadcastManager;
-
-    private String accountType;
+    @ActivityScope
+    DefaultSignUpPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up_activity);
-        ButterKnife.bind(this);
-        DependencyInjector.getGraph().inject(this);
-
-        accountType = getIntent().getStringExtra(Constants.ACCOUNT_TYPE);
+        bindViews();
+        injectMembers();
     }
 
     @Override
@@ -72,43 +60,12 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        broadcastManager.unregister(this);
+        presenter.destroy();
     }
 
     @OnClick(R.id.submit)
     void onSubmitButtonClick(View view) {
-
-        final String username = getUsername();
-        final String email = getEmail();
-        final String password = getPassword();
-
-        final Credentials credentials = Credentials.builder()
-                .setUsername(username)
-                .setEmail(email)
-                .setPassword(password)
-                .setAccountType(accountType)
-                .build();
-
-        broadcastManager.register(this);
-        AuthService.createAccount(this, credentials);
-    }
-
-    @SuppressWarnings("unused")
-    public void onEventMainThread(AccountCreationBroadcastMessage message) {
-        if (isFinishing()) {
-            return;
-        }
-
-        final Bundle data = message.getData();
-
-        if (data.containsKey(AccountManager.KEY_ERROR_MESSAGE)) {
-            Toast.makeText(SignUpActivity.this, data.getString(AccountManager.KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
-        } else {
-            final Intent intent = new Intent().putExtras(data);
-
-            setResult(RESULT_OK, intent);
-            finish();
-        }
+        presenter.createAccount();
     }
 
     @OnClick(R.id.alreadyMember)
@@ -117,15 +74,33 @@ public class SignUpActivity extends AppCompatActivity {
         finish();
     }
 
-    private String getUsername() {
+    @Override
+    public String getUsername() {
         return usernameText.getText().toString().trim();
     }
 
-    private String getPassword() {
+    @Override
+    public String getPassword() {
         return passwordText.getText().toString().trim();
     }
 
-    private String getEmail() {
+    @Override
+    public String getEmail() {
         return emailText.getText().toString().trim();
+    }
+
+    @Override
+    public void showToast(@Nullable String message) {
+        if (!TextUtils.isEmpty(message)) {
+            Utils.showToast(this, message);
+        }
+    }
+
+    protected void bindViews() {
+        ButterKnife.bind(this);
+    }
+
+    protected void injectMembers() {
+        DependencyInjector.activityComponent(this).inject(this);
     }
 }

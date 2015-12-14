@@ -65,7 +65,8 @@ public abstract class Credentials implements Parcelable {
     }
 
     public static Builder builder() {
-        return new AutoValue_Credentials.Builder();
+        return new AutoValue_Credentials.Builder()
+                .setAccountType(Constants.ACCOUNT_TYPE);
     }
 
     @AutoValue.Builder

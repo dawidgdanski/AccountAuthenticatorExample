@@ -1,7 +1,5 @@
 package com.authenticator.account.di;
 
-import com.authenticator.account.AuthenticationApplication;
-
 interface MainComponent extends DependencyGraph {
 
     final class Initializer {
@@ -9,13 +7,13 @@ interface MainComponent extends DependencyGraph {
         private Initializer() {
         }
 
-        static DependencyGraph initialize(AuthenticationApplication application,
-                                          ModuleProvisionContract moduleProvisionContract) {
+        static DependencyGraph initialize(ModuleSupplier moduleSupplier) {
             return DaggerDependencyGraph.builder()
-                    .applicationModule(moduleProvisionContract.provideApplicationModule(application))
-                    .authenticationModule(moduleProvisionContract.provideAuthenticationModule(application))
-                    .broadcastModule(moduleProvisionContract.provideBroadcastModule(application))
-                    .httpModule(moduleProvisionContract.provideHttpModule(application))
+                    .applicationModule(moduleSupplier.provideApplicationModule())
+                    .authenticationModule(moduleSupplier.provideAuthenticationModule())
+                    .broadcastModule(moduleSupplier.provideBroadcastModule())
+                    .httpModule(moduleSupplier.provideHttpModule())
+                    .memoryLeakDetectionModule(moduleSupplier.provideMemoryLeakDetectionModule())
                     .build();
         }
 

@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.authenticator.account.BuildConfig;
 import com.authenticator.account.exception.AuthenticationException;
-import com.authenticator.account.model.ParseResponse;
+import com.authenticator.account.architecture.model.ParseResponse;
 import com.google.common.base.Preconditions;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
